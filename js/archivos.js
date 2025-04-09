@@ -1,6 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
-  const tabla = document.querySelector("#tablaMateriasArchivos tbody"); // asumimos que hay una tabla
-
+  const tabla = document.querySelector("#tablaMateriasArchivos tbody"); ////FUNCION PROXIMA AGREGAR MATERIAS QUE DECIDA EL USUARIO. ASUMIMOS UNA TABLA
   let materias = JSON.parse(localStorage.getItem("materias")) || [];
 
   materias.forEach(materia => {
@@ -18,7 +17,7 @@ document.addEventListener("DOMContentLoaded", function () {
       tabla.appendChild(fila);
   });
 
-  // Después de agregar las filas dinámicamente, correr tu lógica de archivos
+  
   inicializarDropdowns(); 
 });
 
@@ -61,7 +60,7 @@ function inicializarDropdowns() {
               mostrarArchivos(materiaId, archivosContainer);
               archivosContainer.style.display = "block";
               fileInput.value = "";
-          }
+          } 
       });
   });
 }

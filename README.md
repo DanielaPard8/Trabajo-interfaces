@@ -1,7 +1,7 @@
 # PWA - Gestión Académica Universitaria
 
 Una **Progressive Web App (PWA)** diseñada para estudiantes de la **Licenciatura en Informática**, orientada a facilitar la organización académica personal. Esta aplicación permite visualizar materias cursadas, gestionar inscripciones, calcular promedios, planificar la carrera y mucho más, con soporte offline/online.
-La idea principal es construir una aplicacion web que sea amigable, interactiva y facil de usar para cada usuario, proporcionandoles una mejor experencia de organizacion academica.
+La idea principal es construir una aplicacion web que sea amigable, interactiva y facil de usar para cada usuario, proporcionandoles una mejor experencia de organización academica.
 ---
 
 ## 🚀 Funcionalidades principales

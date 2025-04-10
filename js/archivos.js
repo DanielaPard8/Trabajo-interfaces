@@ -1,5 +1,68 @@
-document.addEventListener("DOMContentLoaded", function () {
-  const tabla = document.querySelector("#tablaMateriasArchivos tbody"); ////FUNCION PROXIMA AGREGAR MATERIAS QUE DECIDA EL USUARIO. ASUMIMOS UNA TABLA
+/*SELECCION DE DIAS*/
+function mostrarSelector(elemento) {
+    const contenedor = elemento.closest(".dias-selector");
+    const selector = contenedor.querySelector(".dias-checkboxes");
+    selector.style.display = "block";
+    elemento.style.display = "none";
+}
+        
+function guardarDias(boton) {
+    const contenedor = boton.closest(".dias-selector");
+    const checkboxes = contenedor.querySelectorAll("input[type=checkbox]:checked");
+    const dias = Array.from(checkboxes).map(cb => cb.value).join(" - ");
+        
+    contenedor.querySelector(".dias").innerText = dias || "Elegir días";
+    contenedor.querySelector(".dias").style.display = "inline";
+    contenedor.querySelector(".dias-checkboxes").style.display = "none";
+}
+
+/*DIBUJA LA TABLA*/
+document.addEventListener("DOMContentLoaded", function() {
+const selects = document.querySelectorAll(".estado-select");
+
+    selects.forEach(select => {
+        select.addEventListener("change", function () {
+            const fila = this.closest("tr");
+            const celdaMateria = fila.children[1];
+            celdaMateria.classList.remove("materia-en-curso", "materia-completada");
+                
+            if(this.value === "en-curso"){
+                celdaMateria.classList.add("materia-en-curso");
+            }else if(this.value === "completada"){
+                celdaMateria.classList.add("materia-completada");
+            }
+                
+        }
+        );
+    });
+});
+/*RELOJ*/
+function openTimePicker(button) {
+    
+const timeInput = document.createElement('input');
+timeInput.type = 'text'; 
+timeInput.className = 'time-input'; 
+    
+// Insert
+button.parentNode.insertBefore(timeInput, button.nextSibling);
+    
+// Inicializa
+flatpickr(timeInput, {
+enableTime: true,
+noCalendar: true,
+dateFormat: "H:i",
+onChange: function(selectedDates, dateStr) {
+    const selectedTimeDisplay = button.previousElementSibling; 
+    selectedTimeDisplay.textContent = dateStr; 
+    timeInput.remove(); 
+}
+});
+    
+timeInput.focus(); 
+}
+/*document.addEventListener("DOMContentLoaded", function () {
+  const tabla = document.querySelector("#tablaMateriasArchivos tbody"); // asumimos que hay una tabla
+
   let materias = JSON.parse(localStorage.getItem("materias")) || [];
 
   materias.forEach(materia => {
@@ -17,7 +80,7 @@ document.addEventListener("DOMContentLoaded", function () {
       tabla.appendChild(fila);
   });
 
-  
+  // Después de agregar las filas dinámicamente correr el archivo
   inicializarDropdowns(); 
 });
 
@@ -60,7 +123,7 @@ function inicializarDropdowns() {
               mostrarArchivos(materiaId, archivosContainer);
               archivosContainer.style.display = "block";
               fileInput.value = "";
-          } 
+          }
       });
   });
 }
@@ -76,3 +139,4 @@ function mostrarArchivos(materiaId, contenedor) {
       contenedor.appendChild(a);
   });
 }
+*/

@@ -105,6 +105,10 @@ body {
     gap: 1rem
 }
 
+.form__field--doc {
+    display: none;
+}
+
 .form__input {
     margin: 0 1rem 0 0;
     border: 1px solid #dacece;

@@ -1,5 +1,76 @@
-// Esperamos la carga del DOM
-document.addEventListener('DOMContentLoaded', () => {
+     // Detectamos el tipo de documento seleccionado y trabajamos en el.
+     const tipoDocumento = document.getElementById("tipoDocumento");
+     const numeroDocumentoInput = document.getElementById("numeroDocumento");
+     const numeroDocumentoVisible = document.querySelector(".form__field--doc");
+     const numeroDoc = numeroDocumentoInput.value.trim();
+     const labelDoc = document.querySelector(".form__label--doc");
+     let isValid = true;
+ 
+     tipoDocumento.addEventListener("change", () => {
+        const tipo = tipoDocumento.value;
+    
+        numeroDocumentoInput.value = "";
+        numeroDocumentoInput.classList.remove("input-error");
+        const errorDiv = document.getElementById("error-numeroDocumento");
+        if (errorDiv) errorDiv.textContent = "";
+    
+        // Mostrar el campo según el tipo
+        numeroDocumentoVisible.style.display = tipo ? "flex" : "none";
+        switch(tipo) {
+            case "dni":
+                labelDoc.textContent = "Numero de DNI"
+                break;
+            case "lc":
+            case "le":
+                labelDoc.textContent = "Numero de libreta"
+                break;
+            case "pasaporte":
+                labelDoc.textContent = "Pasaporte"
+        }
+    });
+    
+    // Validar número de documento solo cuando el campo pierde el foco
+    numeroDocumentoInput.addEventListener("blur", () => {
+        const tipo = tipoDocumento.value;
+        const numeroDoc = numeroDocumentoInput.value.trim();
+    
+        // Limpiar errores anteriores
+        numeroDocumentoInput.classList.remove("input-error");
+        const errorDiv = document.getElementById("error-numeroDocumento");
+        if (errorDiv) errorDiv.textContent = "";
+    
+        if (!numeroDoc) return; // No mostrar error si el campo está vacío
+    
+        switch (tipo) {
+            case "dni":
+                if (!/^\d{7,8}$/.test(numeroDoc)) {
+                    mostrarError(numeroDocumentoInput, "El DNI debe tener 7 u 8 dígitos.");
+                }
+                break;
+            case "le":
+            case "lc":
+                if (!/^\d{7}$/.test(numeroDoc)) {
+                    mostrarError(numeroDocumentoInput, "La libreta debe tener exactamente 7 dígitos.");
+                }
+                break;
+            case "pasaporte":
+                if (!/^[A-Z]{1}\d{6,7}$/.test(numeroDoc)) {
+                    mostrarError(numeroDocumentoInput, "El pasaporte debe empezar con una letra seguida de 6 a 8 números.");
+                }
+                break;
+        }
+    });
+
+    //Validar que se introduzca una fecha de nacimiento valida.
+    const fechaNacimiento = document.getElementById("fecha");
+    const hoy = new Date();
+    const yyyy = String(hoy.getFullYear());
+    const mm = String(hoy.getMonth() + 1).padStart(2, '0');
+    const dd = String(hoy.getDate()).padStart(2, '0');
+    const fechaMaxima = `${yyyy}-${mm}-${dd}`;
+    fechaNacimiento.max = fechaMaxima
+    
+    
     const form = document.querySelector(".form");
 
     // Interceptamos el formulario para validar los datos
@@ -15,7 +86,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         // Validación de datos
-        let isValid = true;
         const camposObligatorios = [
             "nombre", "apellido", "tipoDocumento", "numeroDocumento", "fecha", "telefono", "sexo",
             "identidadGenero", "situacionFamiliar", "hijos", "padre", "madre", "familiares", "calle",
@@ -38,7 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const erroresContraseña = validarContraseñaFuerte(contraseña);
         if (erroresContraseña.length > 0) {
-            mostrarError(contraseñaInput, erroresContraseña.join(" "));
+            mostrarError(contraseñaInput, erroresContraseña.map(e => `• ${e}`).join("<br>"));
             isValid = false;
         }
 
@@ -66,7 +136,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function mostrarError(input, mensaje) {
         input.classList.add("input-error");
         const errorDiv = document.getElementById(`error-${input.id}`);
-        if (errorDiv) errorDiv.textContent = mensaje;
+        if (errorDiv) errorDiv.innerHTML = mensaje;
     }
 
     function validarContraseñaFuerte(contraseña) {
@@ -89,4 +159,4 @@ document.addEventListener('DOMContentLoaded', () => {
             mostrarError(emailInput, "El email no es válido.");
         }
     }
-});
+

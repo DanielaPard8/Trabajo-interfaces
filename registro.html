@@ -14,7 +14,7 @@
 </head>
 
 <body>
-  <nav class="brand-nav">
+  <nav class="brand-nav brand-nav-hidden">
     <div class="brand-nav__content">
       <img src="/assets/UNO-LOGO.png" alt="" class="brand-nav__logo" />
       <p class="brand-nav__logo-name">Universidad Nacional Del Oeste</p>
@@ -193,14 +193,8 @@
 
           <div class="form__field">
             <label for="localidad" class="form__label">Localidad</label>
-            <select id="localidad" name="localidad" class="form__select">
-              <option value="">-- Seleccionar --</option>
-              <option value="merlo">Merlo</option>
-              <option value="sanJusto">San Justo</option>
-              <option value="moron">Morón</option>
-              <option value="ituzaingo">Ituzaingó</option>
-              <option value="moreno">Moreno</option>
-            </select>
+            <input type="text" class="form__input" id="localidad" list="sugerencias-localidades" placeholder="Escribe tu localidad">
+            <datalist id="sugerencias-localidades"></datalist>
             <div class="error-message" id="error-localidad"></div>
           </div>
 
@@ -228,7 +222,7 @@
             <div class="error-message" id="error-email"></div>
           </div>
           <div class="form__password-camp">
-          <div class="form__field">
+            <div class="form__field">
               <label for="contraseña" class="form__label">Contraseña</label>
               <input type="password" id="contraseña" name="contraseña" class="form__input" />
               <div class="tooltip">
@@ -251,10 +245,20 @@
         </div>
       </fieldset>
       <div class="form__button">
-          <button type="submit">Enviar</button>    
+        <button type="submit">Enviar</button>
       </div>
     </form>
   </div>
+
+    <div class="modal" id="modalConfirmacion">
+      <div class="modal__content modal__content-animation-opened modal__content-anamation-closed">
+        <h2>Registro exitoso</h2>
+        <img src="/assets/check.png" alt="" class="modal__check">
+        <p>Tu registro se completo correctamente. Se ha enviado un correo de confirmacion.</p>
+        <button id="cerrarModal">Cerrar</button>
+      </div>
+    </div>
+  
   <script src="/js/registro.js"></script>
 </body>
 

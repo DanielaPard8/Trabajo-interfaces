@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"> 
+        <link rel="stylesheet" href="/css/agenda.css">
+        <meta name="viewport" content="width:device-width, initial-scale=1.0">
+        <title>Agenda</title>
+    </head>
+    <body>
+        <header>
+            <div class="container-header">
+              <img src="logo.png" alt="Logo" />
+              <h1>Agenda</h1>
+            </div>
+        </header>
+        <div class="container">
+            <div class="sidebar">
+                <h2>Menú</h2>
+                <ul>
+                    <li><a href="#" class="menu-link" data-target="#perfil.html">Perfil</a></li>
+                    <li><a href="#" class="menu-link" data-target="#archivos.html">Mis Archivos</a></li>
+                    <li><a href="#" class="menu-link" data-target="#materias.html">Materias</a></li>
+                    <li><a href="#" class="menu-link" data-target="#examenes.html">Exámenes</a></li>
+                    <li><a href="#" class="menu-link" data-target="#agenda.html">Agenda</a></li>
+                    <li><a href="#" class="menu-link" data-target="#configuracion.html">Configuración</a></li>
+                </ul>
+            </div>
+            
+            <div class="main">
+                
+                <div class="calendar">
+                    <div class="calendar-header">
+                        <button id="prevBtn">
+                            <i class="fa-solid fa-chevron-left"></i>
+                        </button>
+                        <div class="monthYear" id="monthYear"></div>
+                        <button id="nextBtn">
+                            <i class="fa-solid fa-chevron-right"></i>
+                        </button>
+                    </div>
+                    <div class="days">
+                        <div class="day">Lun</div>
+                        <div class="day">Mar</div>
+                        <div class="day">Mier</div>
+                        <div class="day">Jue</div>
+                        <div class="day">Vier</div>
+                        <div class="day">Sab</div>
+                        <div class="day">Dom</div>
+                    </div>
+                    <div class="dates" id="dates"></div>
+                </div>
+            </div>
+        </div>
+
+        <script src="/js/agenda.js"></script>
+    </body>
+</html>

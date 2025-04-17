@@ -53,29 +53,40 @@ fechaNacimiento.max = fechaMaxima;
 //Se hace uso de la API Georef con el fin de que el usuario pueda ingresar su localidad.
 const localidadInput = document.getElementById("localidad");
 const datalist = document.getElementById("sugerencias-localidades");
-
+const patternReset = /[áéíóúÁÉÍÓÚ]/g
 localidadInput.addEventListener("input", () => {
     const valor = localidadInput.value.trim();
+    //Si el usuario escribo mas de 3 palabras, se empieza a hacer la busqueda.
     if (valor.length >= 3) {
+        //Se hace una solictud get.
         fetch(`https://apis.datos.gob.ar/georef/api/localidades?nombre=${valor}&provincia=Buenos Aires&max=10`)
             .then(res => res.json())
             .then(data => {
+                //Borra sugerencias anteriores.
                 datalist.innerHTML = "";
+                //Filtra las localidades segun la categoria de "entidad" que es la mas comun cuando se selecciona una localidad.
                 const localidades = data.localidades.filter(l => l.categoria === "Entidad");
-                console.log(localidades)
+                //Recorre las localidades encontradas
                 localidades.forEach(loc => {
                     const option = document.createElement("option");
-                    option.value = `${loc.nombre}, ${loc.provincia.nombre}`;
+                    //El option creado tendra como valor el nombre de la localidad y el nombre de la provincia (ya que varia el nombre, por ej: "merlo, buenos aires", "caballito, ciudad autonoma de buenos aires").
+                    option.value = (`${loc.nombre.replace(patternReset, (letra) => {
+                        const reemplazos = {
+                             'á': 'a', 'é': 'e', 'í': 'i', 'ó': 'o', 'ú': 'u'
+                        };
+                        return reemplazos[letra] || letra;
+                    })}, ${loc.provincia.nombre}`);
                     datalist.appendChild(option);
                 });
             })
+            //En caso de un error.
             .catch(error => {
                 console.error("Error al obtener localidades: ", error);
                 datalist.innerHTML = "";
                 const option = document.createElement("option");
                 option.value = "Error al cargar localidades";
                 datalist.appendChild(option);
-            })
+            });
     }
 });
 

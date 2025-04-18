@@ -91,10 +91,10 @@ localidadInput.addEventListener("input", () => {
 });
 
 
-const form = document.querySelector(".form");
+const form = document.getElementById("form");
 
 // Interceptamos el formulario para validar los datos
-form.addEventListener("submit", (e) => {
+form.addEventListener("submit", async function(e) {
     e.preventDefault();
     let isValid = true;
 
@@ -157,18 +157,6 @@ form.addEventListener("submit", (e) => {
     const cerrarModal = document.getElementById("cerrarModal");
 
 
-    // Si todo está bien, guarda y redirige al inicio
-    if (isValid) {
-        const usuario = {
-            nombre: document.getElementById("nombre").value.trim(),
-            apellido: document.getElementById("apellido").value.trim(),
-            usuario: document.getElementById("usuario").value.trim(),
-            email: document.getElementById("email").value.trim(),
-            contraseña: contraseña // no guardar asi
-        };
-        console.log(isValid);
-    }
-
     if (isValid) {
         const modalContent = document.querySelector(".modal__content");
         //Quitamos las clases actuales para volver a ejecutar la animacion solo si fue ejecutada anteriormente.
@@ -191,9 +179,47 @@ form.addEventListener("submit", (e) => {
             modalContent.removeEventListener("animationend", anonima);
         });
         //Una vez cerrada la ventana modal redirige a la pagina indicada.
-        localStorage.setItem("usuarioRegistrado", JSON.stringify(usuario));
-        window.location.href = "Inicio_usuario.html";
+        //localStorage.setItem("usuarioRegistrado", JSON.stringify(usuario));
+        //window.location.href = "Inicio_usuario.html";
     });
+
+        // Si todo está bien, se envia el formulario al servidor
+        if (isValid) {
+            //Recogemos los datos del formulario.
+            const formData = new FormData(form);
+
+            //Convertimos los datos del formulario en un objeto.
+            const formObject = {};
+            formData.forEach((value, key) => {
+                formObject[key] = value;
+            });
+
+            //Enviamos los datos al servidor.
+
+            try {
+                const response = await fetch('http://localhost:3000/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formObject), //Enviamos los datos como JSON.
+                });
+
+                const result = await response.json();
+                console.log("Respuesta del servidor:", result);
+
+                //Manejamos la respuesta del servidor.
+                //En caso de exito.
+                if(response.ok) {
+                    alert("Formulario enviado con exito.");
+                } else {
+                    alert("Error al enviar el formulario.");
+                }
+            } catch (error) {
+                console.error("Errror al enviar el formulario: ", error);
+                alert("Hubo un error en la conexión");
+            } 
+        }
 
 
 });
@@ -240,11 +266,9 @@ function validarNumeroDocumento() {
     switch (tipo) {
         case "dni":
             if (!/^\d{7,8}$/.test(numeroDoc)) {
-                console.log("entre al if")
                 mostrarError(numeroDocumentoInput, "El DNI debe tener 7 u 8 dígitos.");
                 return false;
             }
-
             break;
         case "le":
         case "lc":

@@ -22,7 +22,7 @@
   </nav>
 
   <div class="form-container">
-    <form class="form">
+    <form class="form" id="form">
       <div class="form__title-container">
         <h2 class="form__title">Formulario de Registro</h2>
       </div>
@@ -44,7 +44,7 @@
 
           <div class="form__field">
             <label class="form__label" for="tipoDocumento">Tipo de documento</label>
-            <select name="tipoDocumento" id="tipoDocumento" class="form__select">
+            <select name="tipo_documento" id="tipoDocumento" class="form__select">
               <option value="">-- Seleccionar --</option>
               <option value="dni">DNI</option>
               <option value="le">Libreta de enrolamiento</option>
@@ -56,13 +56,13 @@
 
           <div class="form__field form__field--doc">
             <label for="numeroDocumento" class="form__label form__label--doc">Número de documento</label>
-            <input type="text" class="form__input" id="numeroDocumento" name="numeroDocumento" />
+            <input type="text" class="form__input" id="numeroDocumento" name="numero_documento" />
             <div class="error-message" id="error-numeroDocumento"></div>
           </div>
 
           <div class="form__field">
             <label for="fecha" class="form__label">Fecha de nacimiento</label>
-            <input type="date" id="fecha" class="form__input" />
+            <input type="date" id="fecha" class="form__input" name="fecha_nacimiento"/>
             <div class="error-message" id="error-fecha"></div>
           </div>
 
@@ -84,7 +84,7 @@
 
           <div class="form__field">
             <label for="identidadGenero" class="form__label">Identidad de género</label>
-            <select name="identidadGenero" id="identidadGenero" class="form__select">
+            <select name="identidad_genero" id="identidadGenero" class="form__select">
               <option value="">-- Seleccionar --</option>
               <option value="varon">Varón</option>
               <option value="varonTrans">Varón Trans</option>
@@ -106,7 +106,7 @@
 
           <div class="form__field">
             <label for="situacionFamiliar" class="form__label">Situación familiar</label>
-            <select name="situacionFamiliar" id="situacionFamiliar" class="form__select">
+            <select name="situacion_familiar" id="situacionFamiliar" class="form__select">
               <option value="">-- Seleccionar --</option>
               <option value="soltero">Soltero</option>
               <option value="casado">Casado</option>
@@ -120,7 +120,7 @@
 
           <div class="form__field">
             <label for="hijos" class="form__label">Cantidad de hijos</label>
-            <select name="hijos" id="hijos" class="form__select">
+            <select name="cantidad_hijos" id="hijos" class="form__select">
               <option value="">-- Seleccionar --</option>
               <option value="uno">Uno</option>
               <option value="dos">Dos</option>
@@ -131,7 +131,7 @@
 
           <div class="form__field">
             <label for="padre" class="form__label">Situación de padre</label>
-            <select name="padre" id="padre" class="form__select">
+            <select name="situacion_padre" id="padre" class="form__select">
               <option value="">-- Seleccionar --</option>
               <option value="vive">Vive</option>
               <option value="noVive">No vive</option>
@@ -142,7 +142,7 @@
 
           <div class="form__field">
             <label for="madre" class="form__label">Situación de madre</label>
-            <select name="madre" id="madre" class="form__select">
+            <select name="situacion_madre" id="madre" class="form__select">
               <option value="">-- Seleccionar --</option>
               <option value="vive">Vive</option>
               <option value="noVive">No vive</option>
@@ -153,7 +153,7 @@
 
           <div class="form__field form__field-grid-item">
             <label for="familiares" class="form__label">Cantidad de familiares a cargo</label>
-            <select name="familiares" id="familiares" class="form__select">
+            <select name="familiares_a_cargo" id="familiares" class="form__select">
               <option value="">-- Seleccionar --</option>
               <option value="uno">Uno</option>
               <option value="dos">Dos</option>
@@ -193,14 +193,14 @@
 
           <div class="form__field">
             <label for="localidad" class="form__label">Localidad</label>
-            <input type="text" class="form__input" id="localidad" list="sugerencias-localidades" placeholder="Escribe tu localidad">
+            <input type="text" name="localidad" class="form__input" id="localidad" list="sugerencias-localidades" placeholder="Escribe tu localidad">
             <datalist id="sugerencias-localidades"></datalist>
             <div class="error-message" id="error-localidad"></div>
           </div>
 
           <div class="form__field">
             <label for="codigoPostal" class="form__label">Codigo Postal</label>
-            <input type="text" id="codigoPostal" class="form__input" />
+            <input type="text" name="codigo_postal" id="codigoPostal" class=" name=codigoPostal" />
             <div class="error-message" id="error-codigoPostal"></div>
           </div>
         </div>
@@ -239,7 +239,7 @@
 
           <div class="form__field">
             <label for="repetirContraseña" class="form__label">Repita la contraseña</label>
-            <input type="password" id="repetirContraseña" name="repetirContraseña" class="form__input" />
+            <input type="password" id="repetirContraseña" class="form__input" />
             <div class="error-message" id="error-repetirContraseña"></div>
           </div>
         </div>

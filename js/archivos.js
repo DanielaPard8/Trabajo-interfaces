@@ -167,25 +167,7 @@ document.addEventListener("DOMContentLoaded", function() {
     
     mostrarTodasLasMaterias();
 
-    // Este bloque de código ya no es necesario aquí.
-    // La clase `materia-en-curso` y `materia-completada` se asigna directamente en el innerHTML del <td>
-    // y se actualiza en `actualizarMateria`.
-    /*
-    const selects = document.querySelectorAll(".estado-select");
-    selects.forEach(select => {
-        select.addEventListener("change", function () {
-            const fila = this.closest("tr");
-            const celdaMateria = fila.children[1];
-            celdaMateria.classList.remove("materia-en-curso", "materia-completada");
 
-            if (this.value === "en-curso") {
-                celdaMateria.classList.add("materia-en-curso");
-            } else if (this.value === "completada") {
-                celdaMateria.classList.add("materia-completada");
-            }
-        });
-    });
-    */
 });
 
 

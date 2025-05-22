@@ -16,7 +16,6 @@
     </style>
 </head>
 <body>
-    
     <header>
         <div class="container-header">
           <img src="assets/UNO-LOGO-BLANCO.png" alt="Logo" />
@@ -24,34 +23,33 @@
         </div>
     </header>
     <div class="container">
-    <div class="sidebar">
-        <h2>Menú</h2>
-        <ul>
-          <li><a href="#" class="menu-link" data-target="perfil_materias.html">Perfil</a></li>
-          <li><a href="#" class="menu-link" data-target="archivos.html">Mis Archivos</a></li>
-          <li><a href="#" class="menu-link" data-target="usuario_examenes.html">Exámenes</a></li>
-          <li><a href="#" class="menu-link" data-target="agenda.html">Agenda</a></li>
-        </ul>
+        <div class="sidebar">
+            <h2>Menú</h2>
+            <ul>
+                <li><a href="#" class="menu-link" data-target="perfil_materias.html">Perfil</a></li>
+                <li><a href="#" class="menu-link" data-target="archivos.html">Mis Archivos</a></li>
+                <li><a href="#" class="menu-link" data-target="usuario_examenes.html">Exámenes</a></li>
+                <li><a href="#" class="menu-link" data-target="agenda.html">Agenda</a></li>
+            </ul>
+        </div>
+        <div class="main">
+            <table class="tabla-materias">
+                <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>Nombre</th>
+                        <th>Días</th>
+                        <th>Profesor</th>
+                        <th>Horario</th>
+                        <th>Archivos</th> <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody id="tablaMaterias">
+                    </tbody>
+            </table>
+        </div>
     </div>
-    <div class="main">
-        <table class="tabla-materias">
-            <thead>
-              <tr>
-                <th>Código</th>
-                <th>Nombre</th>
-                <th>Días</th>
-                <th>Profesor</th>
-                <th>Horario</th>
-                <th>Archivos</th>
-                <th>Estado</th>
-              </tr>
-            </thead>
-            <tbody id="tablaMaterias">
-              <!-- Las filas se insertan con JS -->
-            </tbody>
-          </table>          
-            <script type="module" src="perfil_materias.js"></script>
-    <script type="module" src="archivos.js"></script>
-        </table>
-    </div>
-</div>
+
+    <script type="module" src="./js/perfil_materias.js"></script>
+    <script type="module" src="./js/archivos.js"></script> </body>
+</html>

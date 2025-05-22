@@ -42,6 +42,7 @@ function agregarMateria() {
         notasFinales.push(parseFloat(nota));
         calcularPromedio();
     }
+    import { mostrarTodasLasMaterias } from 'archivos.js';
     mostrarTodasLasMaterias(); //*Actualiza tabla de materias en Archivos*//
 
 

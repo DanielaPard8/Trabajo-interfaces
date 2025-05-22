@@ -53,37 +53,48 @@ fechaNacimiento.max = fechaMaxima;
 //Se hace uso de la API Georef con el fin de que el usuario pueda ingresar su localidad.
 const localidadInput = document.getElementById("localidad");
 const datalist = document.getElementById("sugerencias-localidades");
-
+const patternReset = /[áéíóúÁÉÍÓÚ]/g
 localidadInput.addEventListener("input", () => {
     const valor = localidadInput.value.trim();
+    //Si el usuario escribo mas de 3 palabras, se empieza a hacer la busqueda.
     if (valor.length >= 3) {
+        //Se hace una solictud get.
         fetch(`https://apis.datos.gob.ar/georef/api/localidades?nombre=${valor}&provincia=Buenos Aires&max=10`)
             .then(res => res.json())
             .then(data => {
+                //Borra sugerencias anteriores.
                 datalist.innerHTML = "";
+                //Filtra las localidades segun la categoria de "entidad" que es la mas comun cuando se selecciona una localidad.
                 const localidades = data.localidades.filter(l => l.categoria === "Entidad");
-                console.log(localidades)
+                //Recorre las localidades encontradas
                 localidades.forEach(loc => {
                     const option = document.createElement("option");
-                    option.value = `${loc.nombre}, ${loc.provincia.nombre}`;
+                    //El option creado tendra como valor el nombre de la localidad y el nombre de la provincia (ya que varia el nombre, por ej: "merlo, buenos aires", "caballito, ciudad autonoma de buenos aires").
+                    option.value = (`${loc.nombre.replace(patternReset, (letra) => {
+                        const reemplazos = {
+                             'á': 'a', 'é': 'e', 'í': 'i', 'ó': 'o', 'ú': 'u'
+                        };
+                        return reemplazos[letra] || letra;
+                    })}, ${loc.provincia.nombre}`);
                     datalist.appendChild(option);
                 });
             })
+            //En caso de un error.
             .catch(error => {
                 console.error("Error al obtener localidades: ", error);
                 datalist.innerHTML = "";
                 const option = document.createElement("option");
                 option.value = "Error al cargar localidades";
                 datalist.appendChild(option);
-            })
+            });
     }
 });
 
 
-const form = document.querySelector(".form");
+const form = document.getElementById("form");
 
 // Interceptamos el formulario para validar los datos
-form.addEventListener("submit", (e) => {
+form.addEventListener("submit", async function(e) {
     e.preventDefault();
     let isValid = true;
 
@@ -146,18 +157,6 @@ form.addEventListener("submit", (e) => {
     const cerrarModal = document.getElementById("cerrarModal");
 
 
-    // Si todo está bien, guarda y redirige al inicio
-    if (isValid) {
-        const usuario = {
-            nombre: document.getElementById("nombre").value.trim(),
-            apellido: document.getElementById("apellido").value.trim(),
-            usuario: document.getElementById("usuario").value.trim(),
-            email: document.getElementById("email").value.trim(),
-            contraseña: contraseña // no guardar asi
-        };
-        console.log(isValid);
-    }
-
     if (isValid) {
         const modalContent = document.querySelector(".modal__content");
         //Quitamos las clases actuales para volver a ejecutar la animacion solo si fue ejecutada anteriormente.
@@ -180,9 +179,47 @@ form.addEventListener("submit", (e) => {
             modalContent.removeEventListener("animationend", anonima);
         });
         //Una vez cerrada la ventana modal redirige a la pagina indicada.
-        localStorage.setItem("usuarioRegistrado", JSON.stringify(usuario));
-        window.location.href = "Inicio_usuario.html";
+        //localStorage.setItem("usuarioRegistrado", JSON.stringify(usuario));
+        //window.location.href = "Inicio_usuario.html";
     });
+
+        // Si todo está bien, se envia el formulario al servidor
+        if (isValid) {
+            //Recogemos los datos del formulario.
+            const formData = new FormData(form);
+
+            //Convertimos los datos del formulario en un objeto.
+            const formObject = {};
+            formData.forEach((value, key) => {
+                formObject[key] = value;
+            });
+
+            //Enviamos los datos al servidor.
+
+            try {
+                const response = await fetch('http://localhost:3000/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formObject), //Enviamos los datos como JSON.
+                });
+
+                const result = await response.json();
+                console.log("Respuesta del servidor:", result);
+
+                //Manejamos la respuesta del servidor.
+                //En caso de exito.
+                if(response.ok) {
+                    alert("Formulario enviado con exito.");
+                } else {
+                    alert("Error al enviar el formulario.");
+                }
+            } catch (error) {
+                console.error("Errror al enviar el formulario: ", error);
+                alert("Hubo un error en la conexión");
+            } 
+        }
 
 
 });
@@ -229,11 +266,9 @@ function validarNumeroDocumento() {
     switch (tipo) {
         case "dni":
             if (!/^\d{7,8}$/.test(numeroDoc)) {
-                console.log("entre al if")
                 mostrarError(numeroDocumentoInput, "El DNI debe tener 7 u 8 dígitos.");
                 return false;
             }
-
             break;
         case "le":
         case "lc":

@@ -201,3 +201,49 @@ thead th.lineasTabla {
     }
 }
 
+
+.galeria {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #f4f4f4;
+    border-radius: 8px;
+}
+
+.miniatura {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.archivo-nombre {
+    background: #eee;
+    padding: 4px 6px;
+    border-radius: 4px;
+    font-size: 13px;
+}
+
+.abrir-galeria {
+    margin-top: 6px;
+    font-size: 12px;
+    background: #007bff;
+    color: white;
+    padding: 4px 8px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.abrir-galeria:hover {
+    background: #0056b3;
+}
+
+.sin-archivos {
+    color: #888;
+    font-style: italic;
+}
+

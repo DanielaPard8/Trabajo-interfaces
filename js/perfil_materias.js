@@ -16,44 +16,82 @@ function toggleCamposEstado() {
 }
 
 function agregarMateria() {
-    const materia = document.getElementById("materia").value;
-    const estado = document.getElementById("estado").value;
-    const fecha = document.getElementById("fecha").value;
-    const nota = document.getElementById("nota").value;
+    const materia = obtenerValor("materia");
+    const estado = obtenerValor("estado");
+    const fecha = obtenerValor("fecha");
+    const nota = obtenerValor("nota");
 
     if (!materia || !estado) {
         alert("Completá materia y estado.");
         return;
     }
 
-    let materiasGuardadas = JSON.parse(localStorage.getItem("materias")) || [];
-    if (!materiasGuardadas.includes(materia)) {
-        materiasGuardadas.push(materia);
-        localStorage.setItem("materias", JSON.stringify(materiasGuardadas));
-    } //FUNCION PROXIMA AGREGAR LAS MATERIAS QUE ELIJA EL USUARIO
-
-    let detalle = "";
-    const div = document.createElement("div");
-    div.className = "materia-item";
+    const nuevaMateria = crearMateriaObjeto(materia, estado, fecha, nota);
+    guardarMateriaLocalStorage(nuevaMateria);
 
     if (estado === "regular") {
         if (!fecha) return alert("Ingresá la fecha de regularización.");
         const fechaFinal = new Date(fecha);
         fechaFinal.setFullYear(fechaFinal.getFullYear() + 2);
-        detalle = `Regular (vence: ${fechaFinal.toLocaleDateString()})`;
-        div.innerHTML = `<span><strong>${materia}:</strong> ${detalle}</span>
-        <button class="delete-btn" onclick="eliminar(this, 'regular')">Borrar</button>`;
-        document.getElementById("regularesContainer").appendChild(div);
+        const detalle = `Regular (vence: ${fechaFinal.toLocaleDateString()})`;
+        mostrarMateriaEnPantalla(materia, estado, detalle);
     } else if (estado === "final") {
         if (!nota) return alert("Ingresá la nota del final.");
-        detalle = `Final aprobado con nota: ${nota}`;
-        div.innerHTML = `<span><strong>${materia}:</strong> ${detalle}</span>
-        <button class="delete-btn" onclick="eliminar(this, 'final', ${nota})">Borrar</button>`;
-        document.getElementById("finalesContainer").appendChild(div);
+        const detalle = `Final aprobado con nota: ${nota}`;
+        mostrarMateriaEnPantalla(materia, estado, detalle);
         notasFinales.push(parseFloat(nota));
         calcularPromedio();
     }
+    mostrarTodasLasMaterias(); //*Actualiza tabla de materias en Archivos*//
 
+
+    limpiarFormulario();
+
+    window.location.href = "archivos.html";
+}
+
+function obtenerValor(id) {
+    return document.getElementById(id).value.trim();
+}
+
+function limpiarFormulario() {
+    ["materia", "estado", "fecha", "nota"].forEach(id => document.getElementById(id).value = "");
+    toggleCamposEstado();
+}
+
+function crearMateriaObjeto(nombre, estado, fecha, nota) {
+    return {
+        codigo: "", 
+        nombre,
+        profesor: "",
+        dias: [],
+        horario: "-",
+        estado,
+        fecha: fecha || null,
+        nota: nota || null,
+        archivos: []
+    };
+}
+
+function guardarMateriaLocalStorage(materiaObj) {
+    const materias = JSON.parse(localStorage.getItem("materias")) || [];
+    if (!materias.some(m => m.nombre === materiaObj.nombre)) {
+        materias.push(materiaObj);
+        localStorage.setItem("materias", JSON.stringify(materias));
+    }
+}
+
+function mostrarMateriaEnPantalla(materia, estado, detalle) {
+    const contenedor = document.getElementById(estado === "regular" ? "regularesContainer" : "finalesContainer");
+    const div = document.createElement("div");
+    div.className = "materia-item";
+    div.innerHTML = `
+        <span><strong>${materia}:</strong> ${detalle}</span>
+        <button class="delete-btn" onclick="eliminar(this, '${estado}'${estado === 'final' ? ', ' + materia.nota : ''})">Borrar</button>`;
+    contenedor.appendChild(div);
+}
+
+{
     // Limpiar
     document.getElementById("materia").value = "";
     document.getElementById("estado").value = "";
@@ -77,4 +115,18 @@ function eliminar(btn, tipo, nota = null) {
         notasFinales = notasFinales.filter(n => n !== nota);
         calcularPromedio();
     }
+}
+
+function actualizarMateria(elemento, nombreMateria, campo) {
+    const materias = JSON.parse(localStorage.getItem("materias")) || [];
+    const materia = materias.find(m => m.nombre === nombreMateria);
+    if (!materia) return;
+
+    if (campo === "profesor") {
+        materia.profesor = elemento.value.trim();
+    } else if (campo === "estado") {
+        materia.estado = elemento.value;
+    }
+
+    localStorage.setItem("materias", JSON.stringify(materias));
 }

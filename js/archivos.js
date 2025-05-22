@@ -1,142 +1,122 @@
-/*SELECCION DE DIAS*/
 function mostrarSelector(elemento) {
     const contenedor = elemento.closest(".dias-selector");
     const selector = contenedor.querySelector(".dias-checkboxes");
     selector.style.display = "block";
     elemento.style.display = "none";
 }
-        
+
 function guardarDias(boton) {
     const contenedor = boton.closest(".dias-selector");
     const checkboxes = contenedor.querySelectorAll("input[type=checkbox]:checked");
-    const dias = Array.from(checkboxes).map(cb => cb.value).join(" - ");
-        
-    contenedor.querySelector(".dias").innerText = dias || "Elegir días";
+    const dias = Array.from(checkboxes).map(cb => cb.value);
+
+    contenedor.querySelector(".dias").innerText = dias.length ? dias.join(" - ") : "Elegir días";
     contenedor.querySelector(".dias").style.display = "inline";
     contenedor.querySelector(".dias-checkboxes").style.display = "none";
+
+    /*Guardar en localStorage*/
+    const fila = boton.closest("tr");
+    const nombreMateria = fila.children[1].innerText.trim();
+    const materias = JSON.parse(localStorage.getItem("materias")) || [];
+    const materia = materias.find(m => m.nombre === nombreMateria);
+    if (materia) {
+        materia.dias = dias;
+        localStorage.setItem("materias", JSON.stringify(materias));
+    }
 }
 
-/*DIBUJA LA TABLA*/
+
+/* DIBUJA LA TABLA */
 document.addEventListener("DOMContentLoaded", function() {
-const selects = document.querySelectorAll(".estado-select");
+    const selects = document.querySelectorAll(".estado-select");
 
     selects.forEach(select => {
         select.addEventListener("change", function () {
             const fila = this.closest("tr");
             const celdaMateria = fila.children[1];
             celdaMateria.classList.remove("materia-en-curso", "materia-completada");
-                
-            if(this.value === "en-curso"){
+
+            if (this.value === "en-curso") {
                 celdaMateria.classList.add("materia-en-curso");
-            }else if(this.value === "completada"){
+            } else if (this.value === "completada") {
                 celdaMateria.classList.add("materia-completada");
             }
-                
-        }
-        );
+        });
     });
 });
-/*RELOJ*/
+
+/* Reloj timepicker */
 function openTimePicker(button) {
-    
-const timeInput = document.createElement('input');
-timeInput.type = 'text'; 
-timeInput.className = 'time-input'; 
-    
-// Insert
-button.parentNode.insertBefore(timeInput, button.nextSibling);
-    
-// Inicializa
-flatpickr(timeInput, {
-enableTime: true,
-noCalendar: true,
-dateFormat: "H:i",
-onChange: function(selectedDates, dateStr) {
-    const selectedTimeDisplay = button.previousElementSibling; 
-    selectedTimeDisplay.textContent = dateStr; 
-    timeInput.remove(); 
-}
-});
-    
-timeInput.focus(); 
-}
-/*document.addEventListener("DOMContentLoaded", function () {
-  const tabla = document.querySelector("#tablaMateriasArchivos tbody"); // asumimos que hay una tabla
+    const timeInput = document.createElement('input');
+    timeInput.type = 'text'; 
+    timeInput.className = 'time-input'; 
 
-  let materias = JSON.parse(localStorage.getItem("materias")) || [];
+    /
+    button.parentNode.insertBefore(timeInput, button.nextSibling);
 
-  materias.forEach(materia => {
-      const fila = document.createElement("tr");
-      fila.innerHTML = `
-          <td>${materia}</td>
-          <td>
-              <div class="dropdown">
-                  <button class="dropbtn">Ver archivos</button>
-                  <button class="dropbtn">Subir archivo</button>
-                  <div class="dropdown-content"></div>
-              </div>
-          </td>
-      `;
-      tabla.appendChild(fila);
-  });
 
-  // Después de agregar las filas dinámicamente correr el archivo
-  inicializarDropdowns(); 
-});
+    flatpickr(timeInput, {
+        enableTime: true,
+        noCalendar: true,
+        dateFormat: "H:i",
+        onChange: function(selectedDates, dateStr) {
+            const selectedTimeDisplay = button.previousElementSibling; 
+            selectedTimeDisplay.textContent = dateStr; 
+            timeInput.remove(); 
+        }
+    });
 
-function inicializarDropdowns() {
-  const dropdowns = document.querySelectorAll(".dropdown");
-
-  dropdowns.forEach((dropdown) => {
-      const materiaId = dropdown.closest("tr").querySelector("td").innerText;
-
-      const fileInput = document.createElement("input");
-      fileInput.type = "file";
-      fileInput.style.display = "none";
-      fileInput.multiple = true;
-      dropdown.appendChild(fileInput);
-
-      const botones = dropdown.querySelectorAll(".dropbtn");
-      const verArchivosBtn = botones[0];
-      const subirBtn = botones[1];
-      const archivosContainer = dropdown.querySelector(".dropdown-content");
-
-      verArchivosBtn.addEventListener("click", () => {
-          if (archivosContainer.style.display === "block") {
-              archivosContainer.style.display = "none";
-          } else {
-              mostrarArchivos(materiaId, archivosContainer);
-              archivosContainer.style.display = "block";
-          }
-      });
-
-      subirBtn.addEventListener("click", () => fileInput.click());
-
-      fileInput.addEventListener("change", () => {
-          const archivos = fileInput.files;
-          if (archivos.length > 0) {
-              let archivosGuardados = JSON.parse(localStorage.getItem(materiaId)) || [];
-              for (let archivo of archivos) {
-                  archivosGuardados.push(archivo.name);
-              }
-              localStorage.setItem(materiaId, JSON.stringify(archivosGuardados));
-              mostrarArchivos(materiaId, archivosContainer);
-              archivosContainer.style.display = "block";
-              fileInput.value = "";
-          }
-      });
-  });
+    timeInput.focus(); 
 }
 
-function mostrarArchivos(materiaId, contenedor) {
-  const archivosGuardados = JSON.parse(localStorage.getItem(materiaId)) || [];
+window.onload = mostrarTodasLasMaterias;
 
-  contenedor.innerHTML = "";
-  archivosGuardados.forEach((archivo) => {
-      const a = document.createElement("a");
-      a.textContent = archivo;
-      a.href = "#";
-      contenedor.appendChild(a);
-  });
+/* Crea el html para que aparezca la materia */
+function mostrarTodasLasMaterias() {
+    const materias = JSON.parse(localStorage.getItem("materias")) || [];
+    const tabla = document.getElementById("tablaMaterias");
+    tabla.innerHTML = ""; /*Borra lo que había antes*/
+
+    materias.forEach(m => {
+        const tr = document.createElement("tr");
+        tr.className = "hover:bg-gray-50";
+
+        tr.innerHTML = `
+            <td class="lineasTabla">${m.codigo || ""}</td>
+            <td class="lineasTabla">${m.nombre}</td>
+            <td class="lineasTabla">
+                <div class="dias-selector">
+                    <span class="dias" onclick="mostrarSelector(this)">${m.dias.length ? m.dias.join(" - ") : "Elegir días"}</span>
+                    <div class="dias-checkboxes" style="display: none;">
+                        ${["LUN", "MAR", "MIE", "JUE", "VIE", "SAB"].map(dia =>
+                            `<label><input type="checkbox" value="${dia}" ${m.dias.includes(dia) ? "checked" : ""}> ${dia}</label>`).join("")}
+                        <button onclick="guardarDias(this)">Guardar</button>
+                    </div>
+                </div>
+            </td>
+            <td class="lineasTabla">
+                <input type="text" class="input-profesor" value="${m.profesor}" onblur="actualizarMateria(this, '${m.nombre}', 'profesor')">
+            </td>
+            <td class="lineasTabla">
+                <div class="flex items-center">
+                    <span class="selected-time mr-2 text-gray-600">${m.horario}</span>
+                    <button onclick="openTimePicker(this)" class="time-picker-btn bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded">
+                        <i class="fas fa-clock"></i>
+                    </button>
+                </div>
+            </td>
+            <td class="lineasTabla">
+                <select class="estado-select" onchange="actualizarMateria(this, '${m.nombre}', 'estado')">
+                    <option value="sin-hacer" ${m.estado === "sin-hacer" ? "selected" : ""}>Sin hacer</option>
+                    <option value="en-curso" ${m.estado === "en-curso" ? "selected" : ""}>En curso</option>
+                    <option value="completada" ${m.estado === "completada" ? "selected" : ""}>Completada</option>
+                    
+                </select>
+            </td>
+        `;
+
+        tabla.appendChild(tr);
+    });
 }
-*/
+
+

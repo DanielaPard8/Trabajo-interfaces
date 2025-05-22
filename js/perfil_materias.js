@@ -1,3 +1,7 @@
+import { mostrarTodasLasMaterias } from './archivos.js';
+
+// --- FUNCIONES ---
+// (Tus funciones existentes)
 function toggleForm() {
     const form = document.getElementById("materiaForm");
     form.style.display = form.style.display === "none" || form.style.display === "" ? "block" : "none";
@@ -42,13 +46,12 @@ function agregarMateria() {
         notasFinales.push(parseFloat(nota));
         calcularPromedio();
     }
-    import { mostrarTodasLasMaterias } from './archivos.js';
+
+    // Ahora, después de agregar la materia, llamas a la función importada
     mostrarTodasLasMaterias(); //*Actualiza tabla de materias en Archivos*//
 
-
     limpiarFormulario();
-
-    window.location.href = "archivos.html";
+    window.location.href = "archivos.html"; // Redirige a archivos.html
 }
 
 function obtenerValor(id) {
@@ -62,7 +65,7 @@ function limpiarFormulario() {
 
 function crearMateriaObjeto(nombre, estado, fecha, nota) {
     return {
-        codigo: "", 
+        codigo: "",
         nombre,
         profesor: "",
         dias: [],
@@ -86,6 +89,8 @@ function mostrarMateriaEnPantalla(materia, estado, detalle) {
     const contenedor = document.getElementById(estado === "regular" ? "regularesContainer" : "finalesContainer");
     const div = document.createElement("div");
     div.className = "materia-item";
+    // Si la función `eliminar` también está en este módulo, puedes seguir llamándola con onclick,
+    // pero la buena práctica sería también adjuntarla con addEventListener.
     div.innerHTML = `
         <span><strong>${materia}:</strong> ${detalle}</span>
         <button class="delete-btn" onclick="eliminar(this, '${estado}'${estado === 'final' ? ', ' + materia.nota : ''})">Borrar</button>`;
@@ -101,19 +106,21 @@ function mostrarMateriaEnPantalla(materia, estado, detalle) {
     toggleCamposEstado();
 }
 
-let notasFinales = [];
+let notasFinales = []; // Variable global dentro de este módulo
 
 function calcularPromedio() {
     const promedio = notasFinales.reduce((a, b) => a + b, 0) / notasFinales.length;
     const container = document.getElementById("promedioContainer");
-    container.textContent = `Promedio de finales aprobados: ${promedio.toFixed(2)}`;
+    if (container) { // Añadir una comprobación por si el contenedor no existe aún
+        container.textContent = `Promedio de finales aprobados: ${promedio.toFixed(2)}`;
+    }
 }
 
 function eliminar(btn, tipo, nota = null) {
     const item = btn.parentElement;
     item.remove();
     if (tipo === "final" && nota !== null) {
-        notasFinales = notasFinales.filter(n => n !== nota);
+        notasFinales = notasFinales.filter(n => n !== parseFloat(nota));
         calcularPromedio();
     }
 }
@@ -131,3 +138,35 @@ function actualizarMateria(elemento, nombreMateria, campo) {
 
     localStorage.setItem("materias", JSON.stringify(materias));
 }
+
+
+document.addEventListener("DOMContentLoaded", function() {
+    const btnAgregarMateriaDisplay = document.getElementById("btnAgregarMateriaDisplay");
+    if (btnAgregarMateriaDisplay) {
+        btnAgregarMateriaDisplay.addEventListener("click", toggleForm);
+    }
+
+    const estadoSelect = document.getElementById("estado");
+    if (estadoSelect) {
+        estadoSelect.addEventListener("change", toggleCamposEstado);
+        // Llama una vez al cargar para establecer el estado inicial del formulario
+        toggleCamposEstado();
+    }
+
+    // 3. Botón para enviar el formulario de "Agregar Materia"
+    // Asumo que tienes un botón de "submit" o similar dentro de tu formulario
+    // con un ID, por ejemplo, "btnSubmitMateria"
+    const btnSubmitMateria = document.getElementById("btnSubmitMateria"); // <--- Dale un ID a tu botón de envío del formulario
+    if (btnSubmitMateria) {
+        // Es importante evitar el comportamiento por defecto de submit de un formulario
+        // si no quieres que la página se recargue.
+        btnSubmitMateria.addEventListener("click", function(event) {
+            event.preventDefault(); // Evita la recarga de la página si es un botón de submit
+            agregarMateria();
+        });
+    }
+
+    if (window.location.pathname.includes("archivos.html")) {
+        mostrarTodasLasMaterias();
+    }
+});

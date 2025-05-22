@@ -1,3 +1,5 @@
+// --- FUNCIONES AUXILIARES (Si son exclusivas de este archivo, no necesitan export) ---
+
 function mostrarSelector(elemento) {
     const contenedor = elemento.closest(".dias-selector");
     const selector = contenedor.querySelector(".dias-checkboxes");
@@ -23,13 +25,153 @@ function guardarDias(boton) {
         materia.dias = dias;
         localStorage.setItem("materias", JSON.stringify(materias));
     }
+    /* Re-dibujar la tabla después de guardar días */
+    mostrarTodasLasMaterias();
+}
+
+function openTimePicker(button) {
+    const timeInput = document.createElement('input');
+    timeInput.type = 'text';
+    timeInput.className = 'time-input';
+
+    button.parentNode.insertBefore(timeInput, button.nextSibling);
+
+    flatpickr(timeInput, {
+        enableTime: true,
+        noCalendar: true,
+        dateFormat: "H:i",
+        onChange: function(selectedDates, dateStr) {
+            const selectedTimeDisplay = button.previousElementSibling;
+            selectedTimeDisplay.textContent = dateStr;
+            timeInput.remove();
+
+            /*Guardar en localStorage el horario*/
+            const fila = button.closest("tr");
+            const nombreMateria = fila.children[1].innerText.trim();
+            const materias = JSON.parse(localStorage.getItem("materias")) || [];
+            const materia = materias.find(m => m.nombre === nombreMateria);
+            if (materia) {
+                materia.horario = dateStr;
+                localStorage.setItem("materias", JSON.stringify(materias));
+            }
+        }
+    });
+
+    timeInput.focus();
+}
+
+function actualizarMateria(elemento, nombreMateria, campo) {
+    const materias = JSON.parse(localStorage.getItem("materias")) || [];
+    const materia = materias.find(m => m.nombre === nombreMateria);
+    if (!materia) return;
+
+    if (campo === "profesor") {
+        materia.profesor = elemento.value.trim();
+    } else if (campo === "estado") {
+        materia.estado = elemento.value;
+        // Si el estado cambia, también puedes querer actualizar la clase de la celda de la materia
+        const fila = elemento.closest("tr");
+        const celdaMateria = fila.children[1];
+        celdaMateria.classList.remove("materia-en-curso", "materia-completada");
+        if (elemento.value === "en-curso") {
+            celdaMateria.classList.add("materia-en-curso");
+        } else if (elemento.value === "completada") {
+            celdaMateria.classList.add("materia-completada");
+        }
+    }
+
+    localStorage.setItem("materias", JSON.stringify(materias));
 }
 
 
-/* DIBUJA LA TABLA */
-document.addEventListener("DOMContentLoaded", function() {
-    const selects = document.querySelectorAll(".estado-select");
+//* FUNCION EXPORTADA *//
+export function mostrarTodasLasMaterias() {
+    const materias = JSON.parse(localStorage.getItem("materias")) || [];
+    const tabla = document.getElementById("tablaMaterias");
+    if (!tabla) {
+        console.error("Error: No se encontró el elemento con ID 'tablaMaterias'. Asegúrate de que tu HTML tenga <table id='tablaMaterias'>.");
+        return;
+    }
+    tabla.innerHTML = ""; /*Borra lo que había antes*/
 
+    materias.forEach(m => {
+        const tr = document.createElement("tr");
+        tr.className = "hover:bg-gray-50";
+
+        tr.innerHTML = `
+            <td class="lineasTabla">${m.codigo || ""}</td>
+            <td class="lineasTabla ${m.estado === 'en-curso' ? 'materia-en-curso' : ''} ${m.estado === 'completada' ? 'materia-completada' : ''}">${m.nombre}</td>
+            <td class="lineasTabla">
+                <div class="dias-selector">
+                    <span class="dias">${m.dias.length ? m.dias.join(" - ") : "Elegir días"}</span>
+                    <div class="dias-checkboxes" style="display: none;">
+                        ${["LUN", "MAR", "MIE", "JUE", "VIE", "SAB"].map(dia =>
+                            `<label><input type="checkbox" value="${dia}" ${m.dias.includes(dia) ? "checked" : ""}> ${dia}</label>`).join("")}
+                        <button class="btn-guardar-dias">Guardar</button>
+                    </div>
+                </div>
+            </td>
+            <td class="lineasTabla">
+                <input type="text" class="input-profesor" value="${m.profesor}">
+            </td>
+            <td class="lineasTabla">
+                <div class="flex items-center">
+                    <span class="selected-time mr-2 text-gray-600">${m.horario}</span>
+                    <button class="time-picker-btn bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded">
+                        <i class="fas fa-clock"></i>
+                    </button>
+                </div>
+            </td>
+            <td class="lineasTabla">
+                <select class="estado-select">
+                    <option value="sin-hacer" ${m.estado === "sin-hacer" ? "selected" : ""}>Sin hacer</option>
+                    <option value="en-curso" ${m.estado === "en-curso" ? "selected" : ""}>En curso</option>
+                    <option value="completada" ${m.estado === "completada" ? "selected" : ""}>Completada</option>
+                </select>
+            </td>
+        `;
+
+        tabla.appendChild(tr);
+
+        // --- ADJUNTAR EVENT LISTENERS DESPUÉS DE QUE EL TR ESTÁ EN EL DOM ---
+        // Acciones para la fila recién creada (tr)
+        const spanDias = tr.querySelector(".dias");
+        if (spanDias) {
+            spanDias.addEventListener("click", () => mostrarSelector(spanDias));
+        }
+
+        const btnGuardarDias = tr.querySelector(".btn-guardar-dias");
+        if (btnGuardarDias) {
+            btnGuardarDias.addEventListener("click", () => guardarDias(btnGuardarDias));
+        }
+
+        const inputProfesor = tr.querySelector(".input-profesor");
+        if (inputProfesor) {
+            inputProfesor.addEventListener("blur", () => actualizarMateria(inputProfesor, m.nombre, 'profesor'));
+        }
+
+        const btnTimePicker = tr.querySelector(".time-picker-btn");
+        if (btnTimePicker) {
+            btnTimePicker.addEventListener("click", () => openTimePicker(btnTimePicker));
+        }
+
+        const selectEstado = tr.querySelector(".estado-select");
+        if (selectEstado) {
+            selectEstado.addEventListener("change", () => actualizarMateria(selectEstado, m.nombre, 'estado'));
+        }
+    });
+}
+
+// --- INICIALIZACIÓN (llamada a la función principal al cargar el DOM) ---
+document.addEventListener("DOMContentLoaded", function() {
+    
+    mostrarTodasLasMaterias();
+
+    // Este bloque de código ya no es necesario aquí.
+    // La clase `materia-en-curso` y `materia-completada` se asigna directamente en el innerHTML del <td>
+    // y se actualiza en `actualizarMateria`.
+    /*
+    const selects = document.querySelectorAll(".estado-select");
     selects.forEach(select => {
         select.addEventListener("change", function () {
             const fila = this.closest("tr");
@@ -43,80 +185,7 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         });
     });
+    */
 });
-
-/* Reloj timepicker */
-function openTimePicker(button) {
-    const timeInput = document.createElement('input');
-    timeInput.type = 'text'; 
-    timeInput.className = 'time-input'; 
-
-    /
-    button.parentNode.insertBefore(timeInput, button.nextSibling);
-
-
-    flatpickr(timeInput, {
-        enableTime: true,
-        noCalendar: true,
-        dateFormat: "H:i",
-        onChange: function(selectedDates, dateStr) {
-            const selectedTimeDisplay = button.previousElementSibling; 
-            selectedTimeDisplay.textContent = dateStr; 
-            timeInput.remove(); 
-        }
-    });
-
-    timeInput.focus(); 
-}
-
-window.onload = () => mostrarTodasLasMaterias();
-
-/* Crea el html para que aparezca la materia */
-export function mostrarTodasLasMaterias() {
-    const materias = JSON.parse(localStorage.getItem("materias")) || [];
-    const tabla = document.getElementById("tablaMaterias");
-    tabla.innerHTML = ""; /*Borra lo que había antes*/
-
-    materias.forEach(m => {
-        const tr = document.createElement("tr");
-        tr.className = "hover:bg-gray-50";
-
-        tr.innerHTML = `
-            <td class="lineasTabla">${m.codigo || ""}</td>
-            <td class="lineasTabla">${m.nombre}</td>
-            <td class="lineasTabla">
-                <div class="dias-selector">
-                    <span class="dias" onclick="mostrarSelector(this)">${m.dias.length ? m.dias.join(" - ") : "Elegir días"}</span>
-                    <div class="dias-checkboxes" style="display: none;">
-                        ${["LUN", "MAR", "MIE", "JUE", "VIE", "SAB"].map(dia =>
-                            `<label><input type="checkbox" value="${dia}" ${m.dias.includes(dia) ? "checked" : ""}> ${dia}</label>`).join("")}
-                        <button onclick="guardarDias(this)">Guardar</button>
-                    </div>
-                </div>
-            </td>
-            <td class="lineasTabla">
-                <input type="text" class="input-profesor" value="${m.profesor}" onblur="actualizarMateria(this, '${m.nombre}', 'profesor')">
-            </td>
-            <td class="lineasTabla">
-                <div class="flex items-center">
-                    <span class="selected-time mr-2 text-gray-600">${m.horario}</span>
-                    <button onclick="openTimePicker(this)" class="time-picker-btn bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded">
-                        <i class="fas fa-clock"></i>
-                    </button>
-                </div>
-            </td>
-            <td class="lineasTabla">
-                <select class="estado-select" onchange="actualizarMateria(this, '${m.nombre}', 'estado')">
-                    <option value="sin-hacer" ${m.estado === "sin-hacer" ? "selected" : ""}>Sin hacer</option>
-                    <option value="en-curso" ${m.estado === "en-curso" ? "selected" : ""}>En curso</option>
-                    <option value="completada" ${m.estado === "completada" ? "selected" : ""}>Completada</option>
-                </select>
-            </td>
-        `;
-
-        tabla.appendChild(tr);
-    });
-
-}
 
 

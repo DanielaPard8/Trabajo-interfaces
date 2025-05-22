@@ -69,10 +69,10 @@ function openTimePicker(button) {
     timeInput.focus(); 
 }
 
-window.onload = mostrarTodasLasMaterias;
+window.onload = () => mostrarTodasLasMaterias();
 
 /* Crea el html para que aparezca la materia */
-function mostrarTodasLasMaterias() {
+export function mostrarTodasLasMaterias() {
     const materias = JSON.parse(localStorage.getItem("materias")) || [];
     const tabla = document.getElementById("tablaMaterias");
     tabla.innerHTML = ""; /*Borra lo que había antes*/
@@ -110,13 +110,13 @@ function mostrarTodasLasMaterias() {
                     <option value="sin-hacer" ${m.estado === "sin-hacer" ? "selected" : ""}>Sin hacer</option>
                     <option value="en-curso" ${m.estado === "en-curso" ? "selected" : ""}>En curso</option>
                     <option value="completada" ${m.estado === "completada" ? "selected" : ""}>Completada</option>
-                    
                 </select>
             </td>
         `;
 
         tabla.appendChild(tr);
     });
+
 }
 
 

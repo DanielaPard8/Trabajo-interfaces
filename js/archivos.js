@@ -27,7 +27,7 @@ function guardarDias(boton) {
 
 
 /* DIBUJA LA TABLA */
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
     const selects = document.querySelectorAll(".estado-select");
 
     selects.forEach(select => {
@@ -48,10 +48,8 @@ document.addEventListener("DOMContentLoaded", function() {
 /* Reloj timepicker */
 function openTimePicker(button) {
     const timeInput = document.createElement('input');
-    timeInput.type = 'text'; 
-    timeInput.className = 'time-input'; 
-
-    /
+    timeInput.type = 'text';
+    timeInput.className = 'time-input';
     button.parentNode.insertBefore(timeInput, button.nextSibling);
 
 
@@ -59,14 +57,14 @@ function openTimePicker(button) {
         enableTime: true,
         noCalendar: true,
         dateFormat: "H:i",
-        onChange: function(selectedDates, dateStr) {
-            const selectedTimeDisplay = button.previousElementSibling; 
-            selectedTimeDisplay.textContent = dateStr; 
-            timeInput.remove(); 
+        onChange: function (selectedDates, dateStr) {
+            const selectedTimeDisplay = button.previousElementSibling;
+            selectedTimeDisplay.textContent = dateStr;
+            timeInput.remove();
         }
     });
 
-    timeInput.focus(); 
+    timeInput.focus();
 }
 
 window.onload = mostrarTodasLasMaterias;
@@ -89,7 +87,7 @@ function mostrarTodasLasMaterias() {
                     <span class="dias" onclick="mostrarSelector(this)">${m.dias.length ? m.dias.join(" - ") : "Elegir días"}</span>
                     <div class="dias-checkboxes" style="display: none;">
                         ${["LUN", "MAR", "MIE", "JUE", "VIE", "SAB"].map(dia =>
-                            `<label><input type="checkbox" value="${dia}" ${m.dias.includes(dia) ? "checked" : ""}> ${dia}</label>`).join("")}
+            `<label><input type="checkbox" value="${dia}" ${m.dias.includes(dia) ? "checked" : ""}> ${dia}</label>`).join("")}
                         <button onclick="guardarDias(this)">Guardar</button>
                     </div>
                 </div>
@@ -105,8 +103,18 @@ function mostrarTodasLasMaterias() {
                     </button>
                 </div>
             </td>
-            <td class="lineasTabla">
-                <select class="estado-select" onchange="actualizarMateria(this, '${m.nombre}', 'estado')">
+           <td class="lineasTabla">
+    <div class="archivo-uploader">
+        <label class="archivo-label">
+            <i class="fas fa-upload"></i> Subir
+            <input type="file" class="archivo-input" onchange="manejarArchivo(this, '${m.nombre}')">
+        </label>
+        ${m.archivo ? `<div class="archivo-nombre">${m.archivo.nombre}</div>` : ''}
+         </div>
+        </td>
+        <td class="lineasTabla">
+         <select class="estado-select" onchange="actualizarMateria(this, '${m.nombre}', 'estado')">
+
                     <option value="sin-hacer" ${m.estado === "sin-hacer" ? "selected" : ""}>Sin hacer</option>
                     <option value="en-curso" ${m.estado === "en-curso" ? "selected" : ""}>En curso</option>
                     <option value="completada" ${m.estado === "completada" ? "selected" : ""}>Completada</option>
@@ -118,5 +126,29 @@ function mostrarTodasLasMaterias() {
         tabla.appendChild(tr);
     });
 }
+
+/*Agregar archivo*/
+function manejarArchivo(input, nombreMateria) {
+    const archivo = input.files[0];
+    if (!archivo) return;
+
+    const lector = new FileReader();
+    lector.onload = function (e) {
+        const base64 = e.target.result;
+        const materias = JSON.parse(localStorage.getItem("materias")) || [];
+        const materia = materias.find(m => m.nombre === nombreMateria);
+        if (materia) {
+            materia.archivo = {
+                nombre: archivo.name,
+                contenido: base64
+            };
+            localStorage.setItem("materias", JSON.stringify(materias));
+            alert(`Archivo "${archivo.name}" guardado para la materia "${nombreMateria}"`);
+        }
+    };
+    lector.readAsDataURL(archivo);
+}
+
+
 
 

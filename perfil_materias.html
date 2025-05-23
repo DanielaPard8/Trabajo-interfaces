@@ -10,6 +10,7 @@
   <div class="container">
     <h2>Perfil de Usuario</h2>
 
+<<<<<<< HEAD
     <div class="user-info">
       <p><strong>Nombre:</strong> Pepito</p>
       <p><strong>Apellido:</strong> Fulano</p>
@@ -76,4 +77,72 @@
 
   <script src="js/perfil_materias.js"></script>
 </body>
+=======
+        <div class="user-info">
+            <p><strong>Nombre:</strong> Pepito</p>
+            <p><strong>Apellido:</strong> Fulano</p>
+            <p><strong>DNI:</strong> 49123456</p>
+            <p><strong>Legajo:</strong> 12345</p>
+            <p><strong>Email:</strong> pepe@example.com</p>
+        </div>
+
+        <div class="botonera">
+            <button id="btnToggleForm">Agregar Materia</button>
+            <a href="Inicio_usuario.html" class="volver-btn">Volver al inicio</a>
+          </div>
+          
+
+        <div class="add-materia-form" id="materiaForm">
+            <div class="form-group">
+                <label for="materia">Materia:</label>
+                <select id="materia">
+                    <option value="">Seleccionar</option>
+                    <option value="Programación I">Programación I</option>
+                    <option value="Álgebra">Álgebra</option>
+                    <option value="Sistemas Operativos">Sistemas Operativos</option>
+                    <option value="Base de Datos">Base de Datos</option>
+                    <option value="Matemática Discreta">Matemática Discreta</option>
+                    <option value="Paradigmas de Programación">Paradigmas de Programación</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="estado">Estado:</label>
+                <select id="estado" onchange="toggleCamposEstado()">
+                    <option value="">Seleccionar</option>
+                    <option value="regular">Regular</option>
+                    <option value="final">Final</option>
+                    <option value="final">En curso</option>
+                </select>
+            </div>
+
+            <div class="form-group hidden" id="regularizacionGroup">
+                <label for="fecha">Fecha de regularización:</label>
+                <input type="date" id="fecha" />
+            </div>
+
+            <div class="form-group hidden" id="notaGroup">
+                <label for="nota">Nota del final:</label>
+                <input type="number" id="nota" min="1" max="10" />
+            </div>
+
+            <button class="add-btn" onclick="agregarMateria()">Guardar Materia</button>
+        </div>
+
+        <div class="materias-list" id="materiasList">
+            <h3>Materias Regulares</h3>
+            <div id="regularesContainer"></div>
+
+            <h3>Materias Finales</h3>
+            <div id="finalesContainer"></div>
+
+            <div id="promedioContainer" class="promedio-final"></div>
+        </div>
+    </div>
+
+   <script type="module" src="./js/perfil_materias.js"></script>
+    <script type="module" src="./js/archivos.js"></script>
+</body>
+
+>>>>>>> 68452f81a754ff92782c660643ac3ed0f92f1c00
 </html>

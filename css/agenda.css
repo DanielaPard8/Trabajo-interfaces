@@ -1,4 +1,6 @@
 /* RESET */
+
+
 * {
     box-sizing: border-box;
     font-family: Arial, sans-serif;
@@ -87,17 +89,14 @@ header img {
   }
 
   /*Calendario*/
-  .calendar{
+ .calendar {
     width: auto;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
     padding: 10px;
     background: #f2f4f8;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0,0,0,0.3);
-  }
+}
+
 
   .calendar-header{
     display: flex;
@@ -141,13 +140,12 @@ header img {
     font-weight: 600;
   }
 
-  .dates{
-    height: 90vh;
+  .dates {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
     gap: 1px;
-    
-  }
+}
+
 
   .borderDate{
     border-top: 2px dotted #5b5b5b;
@@ -191,3 +189,63 @@ header img {
   .date.inactive:hover{
     color: #fff;
   }
+
+  .examenes-container {
+  margin-top: 20px;
+  background: #f7f7f7;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 0 5px rgba(0,0,0,0.1);
+}
+.examen-item {
+  border-bottom: 1px solid #ccc;
+  padding: 10px 0;
+}
+.examen-item:last-child {
+  border-bottom: none;
+}
+
+.tiene-examen {
+  background-color: #259fac !important;
+  border-radius: 50%;
+  font-weight: bold;
+  color: #e4ff8d;
+}
+
+.borrarExamenBtn {
+    background: crimson;
+    color: white;
+    border: none;
+    padding: 5px;
+    float: right;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.marcarHechoBtn {
+  background-color: #259fac; 
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 25px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.marcarHechoBtn:hover {
+  background-color: #21636a;
+  transform: scale(1.03);
+}
+
+.marcarHechoBtn svg {
+  width: 18px;
+  height: 18px;
+  fill: white;
+}
+
+

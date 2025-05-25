@@ -201,49 +201,33 @@ thead th.lineasTabla {
     }
 }
 
-
-.galeria {
+/*galeria archivos*/
+.archivo-uploader {
     display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 10px;
-    padding: 10px;
-    background-color: #f4f4f4;
-    border-radius: 8px;
+    flex-direction: column;
+    align-items: flex-start;
 }
 
-.miniatura {
-    width: 60px;
-    height: 60px;
-    object-fit: cover;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+.archivo-label {
+    background-color: #259fac;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    display: inline-block;
+}
+
+.archivo-label i {
+    margin-right: 4px;
+}
+
+.archivo-input {
+    display: none;
 }
 
 .archivo-nombre {
-    background: #eee;
-    padding: 4px 6px;
-    border-radius: 4px;
-    font-size: 13px;
+    margin-top: 4px;
+    font-size: 0.8rem;
+    color: #333;
 }
-
-.abrir-galeria {
-    margin-top: 6px;
-    font-size: 12px;
-    background: #007bff;
-    color: white;
-    padding: 4px 8px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.abrir-galeria:hover {
-    background: #0056b3;
-}
-
-.sin-archivos {
-    color: #888;
-    font-style: italic;
-}
-

@@ -7,6 +7,16 @@
         <meta name="viewport" content="width:device-width, initial-scale=1.0">
         <title>Agenda</title>
     </head>
+    <div id="examenModal" class="modal" style="display:none; position:fixed; top:20%; left:30%; background:#fff; padding:20px; border:2px solid #ccc; z-index:1000;">
+  <h3>Agregar Examen</h3>
+  <p id="fechaExamenTexto"></p>
+  <label>Materia: <input type="text" id="materiaExamen"></label><br><br>
+  <label>Hora: <input type="time" id="horaExamen"></label><br><br>
+  <label>Temas: <textarea id="temasExamen"></textarea></label><br><br>
+  <button id="guardarExamen">Guardar</button>
+  <button onclick="document.getElementById('examenModal').style.display='none'">Cancelar</button>
+</div>
+
     <body>
         <header>
             <div class="container-header">
@@ -19,8 +29,8 @@
                 <h2>Menú</h2>
                 <ul>
                   <li><a href="#" class="menu-link" data-target="perfil_materias.html">Perfil</a></li>
+                  <li><a href="#" class="menu-link" data-target="Inicio_usuario.html">Inicio</a></li>
                   <li><a href="#" class="menu-link" data-target="archivos.html">Mis Archivos</a></li>
-                  <li><a href="#" class="menu-link" data-target="usuario_examenes.html">Exámenes</a></li>
                   <li><a href="#" class="menu-link" data-target="agenda.html">Agenda</a></li>
                 </ul>
             </div>
@@ -46,7 +56,12 @@
                         <div class="day">Sab</div>
                         <div class="day">Dom</div>
                     </div>
+
                     <div class="dates" id="dates"></div>
+                    <div id="listaExamenes" class="examenes-container">
+  <h3>Exámenes del mes</h3>
+  <div id="examenesDelMes"></div>
+</div>
                 </div>
             </div>
         </div>
